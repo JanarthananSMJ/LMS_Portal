@@ -1,4 +1,4 @@
-import { GraduationCap, TvMinimalPlay } from "lucide-react";
+import { GraduationCap, TvMinimalPlay, UserCircle } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "../ui/button";
 import { useContext } from "react";
@@ -40,6 +40,13 @@ function StudentViewCommonHeader() {
         >
           <TvMinimalPlay className="h-5 w-5 text-primary" />
           <span className="hidden sm:inline">My Learning</span>
+        </button>
+        <button
+          onClick={() => navigate("/profile")}
+          className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm font-semibold text-foreground transition-colors hover:bg-accent sm:px-3"
+        >
+          <UserCircle className="h-5 w-5 text-primary" />
+          <span className="hidden sm:inline">Profile</span>
         </button>
         <Button variant="outline" size="sm" onClick={handleLogout}>
           Sign Out

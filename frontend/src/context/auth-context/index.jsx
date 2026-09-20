@@ -136,6 +136,13 @@ export default function AuthProvider({ children }) {
     });
   }
 
+  function updateAuthUser(partialUser) {
+    setAuth((prev) => ({
+      ...prev,
+      user: { ...prev.user, ...partialUser },
+    }));
+  }
+
   useEffect(() => {
     checkAuthUser();
   }, []);
@@ -151,6 +158,7 @@ export default function AuthProvider({ children }) {
         handleLoginUser,
         auth,
         resetCredentials,
+        updateAuthUser,
       }}
     >
       {loading ? <Skeleton /> : children}

@@ -92,4 +92,96 @@ const loginUser = async (req, res) => {
   });
 };
 
-module.exports = { registerUser, loginUser };
+const getProfile = async (req, res) => {
+  const user = await User.findById(req.user._id).select("-password");
+
+  if (!user) {
+    return res.status(404).json({
+      success: false,
+      message: "User not found",
+    });
+  }
+
+  return res.status(200).json({
+    success: true,
+    data: user,
+  });
+};
+
+const updateProfile = async (req, res) => {
+  const { userName } = req.body;
+
+  if (!userName || !userName.trim()) {
+    return res.status(400).json({
+      success: false,
+      message: "User name is required",
+    });
+  }
+
+  const existingUser = await User.findOne({
+    userName,
+    _id: { $ne: req.user._id },
+  });
+
+  if (existingUser) {
+    return res.status(400).json({
+      success: false,
+      message: "User name already taken",
+    });
+  }
+
+  const updatedUser = await User.findByIdAndUpdate(
+    req.user._id,
+    { userName: userName.trim() },
+    { new: true }
+  ).select("-password");
+
+  return res.status(200).json({
+    success: true,
+    message: "Profile updated successfully",
+    data: updatedUser,
+  });
+};
+
+const changePassword = async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+
+  if (!currentPassword || !newPassword) {
+    return res.status(400).json({
+      success: false,
+      message: "Current and new password are required",
+    });
+  }
+
+  if (newPassword.length < 6) {
+    return res.status(400).json({
+      success: false,
+      message: "New password must be at least 6 characters",
+    });
+  }
+
+  const user = await User.findById(req.user._id);
+
+  if (!user || !(await bcrypt.compare(currentPassword, user.password))) {
+    return res.status(401).json({
+      success: false,
+      message: "Current password is incorrect",
+    });
+  }
+
+  user.password = await bcrypt.hash(newPassword, 10);
+  await user.save();
+
+  return res.status(200).json({
+    success: true,
+    message: "Password changed successfully",
+  });
+};
+
+module.exports = {
+  registerUser,
+  loginUser,
+  getProfile,
+  updateProfile,
+  changePassword,
+};

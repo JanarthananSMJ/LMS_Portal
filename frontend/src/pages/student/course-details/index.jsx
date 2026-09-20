@@ -14,9 +14,10 @@ import { AuthContext } from "@/context/auth-context";
 import { StudentContext } from "@/context/student-context";
 import {
   checkCoursePurchaseInfoService,
-  createPaymentService,
+  createMockPurchaseService,
   fetchStudentViewCourseDetailsService,
 } from "@/services";
+import { useToast } from "@/hooks/use-toast";
 import { CheckCircle, Globe, Lock, PlayCircle } from "lucide-react";
 import { useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -36,25 +37,25 @@ function StudentViewCourseDetailsPage() {
   const [displayCurrentVideoFreePreview, setDisplayCurrentVideoFreePreview] =
     useState(null);
   const [showFreePreviewDialog, setShowFreePreviewDialog] = useState(false);
-  const [approvalUrl, setApprovalUrl] = useState("");
+  const [isPurchasing, setIsPurchasing] = useState(false);
   const navigate = useNavigate();
   const { id } = useParams();
   const location = useLocation();
+  const { toast } = useToast();
 
   async function fetchStudentViewCourseDetails() {
-    // const checkCoursePurchaseInfoResponse =
-    //   await checkCoursePurchaseInfoService(
-    //     currentCourseDetailsId,
-    //     auth?.user._id
-    //   );
+    const checkCoursePurchaseInfoResponse = await checkCoursePurchaseInfoService(
+      currentCourseDetailsId,
+      auth?.user?._id
+    );
 
-    // if (
-    //   checkCoursePurchaseInfoResponse?.success &&
-    //   checkCoursePurchaseInfoResponse?.data
-    // ) {
-    //   navigate(`/course-progress/${currentCourseDetailsId}`);
-    //   return;
-    // }
+    if (
+      checkCoursePurchaseInfoResponse?.success &&
+      checkCoursePurchaseInfoResponse?.data
+    ) {
+      navigate(`/course-progress/${currentCourseDetailsId}`);
+      return;
+    }
 
     const response = await fetchStudentViewCourseDetailsService(
       currentCourseDetailsId
@@ -75,16 +76,12 @@ function StudentViewCourseDetailsPage() {
   }
 
   async function handleCreatePayment() {
-    const paymentPayload = {
+    if (isPurchasing) return;
+
+    const purchasePayload = {
       userId: auth?.user?._id,
       userName: auth?.user?.userName,
       userEmail: auth?.user?.userEmail,
-      orderStatus: "pending",
-      paymentMethod: "paypal",
-      paymentStatus: "initiated",
-      orderDate: new Date(),
-      paymentId: "",
-      payerId: "",
       instructorId: studentViewCourseDetails?.instructorId,
       instructorName: studentViewCourseDetails?.instructorName,
       courseImage: studentViewCourseDetails?.image,
@@ -93,15 +90,33 @@ function StudentViewCourseDetailsPage() {
       coursePricing: studentViewCourseDetails?.pricing,
     };
 
-    console.log(paymentPayload, "paymentPayload");
-    const response = await createPaymentService(paymentPayload);
+    try {
+      setIsPurchasing(true);
+      const response = await createMockPurchaseService(purchasePayload);
 
-    if (response.success) {
-      sessionStorage.setItem(
-        "currentOrderId",
-        JSON.stringify(response?.data?.orderId)
-      );
-      setApprovalUrl(response?.data?.approveUrl);
+      if (response?.success) {
+        toast({
+          variant: "success",
+          title: "Course purchased",
+          description: "You now have full access to this course.",
+        });
+        navigate("/student-courses");
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Purchase failed",
+          description: response?.message || "Please try again.",
+        });
+      }
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Purchase failed",
+        description:
+          error?.response?.data?.message || "Something went wrong.",
+      });
+    } finally {
+      setIsPurchasing(false);
     }
   }
 
@@ -118,17 +133,13 @@ function StudentViewCourseDetailsPage() {
   }, [id]);
 
   useEffect(() => {
-    if (!location.pathname.includes("course/details"))
-      setStudentViewCourseDetails(null),
-        setCurrentCourseDetailsId(null),
-        setCoursePurchaseId(null);
+    if (!location.pathname.includes("course/details")) {
+      setStudentViewCourseDetails(null);
+      setCurrentCourseDetailsId(null);
+    }
   }, [location.pathname]);
 
   if (loadingState) return <Skeleton />;
-
-  if (approvalUrl !== "") {
-    window.location.href = approvalUrl;
-  }
 
   const getIndexOfFreePreviewUrl =
     studentViewCourseDetails !== null
@@ -248,8 +259,13 @@ function StudentViewCourseDetailsPage() {
                   ${studentViewCourseDetails?.pricing}
                 </span>
               </div>
-              <Button onClick={handleCreatePayment} size="lg" className="w-full">
-                Buy Now
+              <Button
+                onClick={handleCreatePayment}
+                disabled={isPurchasing}
+                size="lg"
+                className="w-full"
+              >
+                {isPurchasing ? "Processing..." : "Buy Now"}
               </Button>
             </CardContent>
           </Card>

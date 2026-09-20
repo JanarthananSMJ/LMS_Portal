@@ -96,6 +96,7 @@ const checkCoursePurchaseInfo = async (req, res) => {
     });
 
     const ifStudentAlreadyBoughtCurrentCourse =
+      !!studentCourses &&
       studentCourses.courses.findIndex((item) => item.courseId === id) > -1;
     res.status(200).json({
       success: true,

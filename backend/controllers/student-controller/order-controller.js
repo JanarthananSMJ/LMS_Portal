@@ -104,6 +104,53 @@ const createOrder = async (req, res) => {
   }
 };
 
+async function enrollStudentInCourse(order) {
+  const studentCourses = await StudentCourses.findOne({
+    userId: order.userId,
+  });
+
+  if (studentCourses) {
+    studentCourses.courses.push({
+      courseId: order.courseId,
+      title: order.courseTitle,
+      instructorId: order.instructorId,
+      instructorName: order.instructorName,
+      dateOfPurchase: order.orderDate,
+      courseImage: order.courseImage,
+    });
+
+    await studentCourses.save();
+  } else {
+    const newStudentCourses = new StudentCourses({
+      userId: order.userId,
+      courses: [
+        {
+          courseId: order.courseId,
+          title: order.courseTitle,
+          instructorId: order.instructorId,
+          instructorName: order.instructorName,
+          dateOfPurchase: order.orderDate,
+          courseImage: order.courseImage,
+        },
+      ],
+    });
+
+    await newStudentCourses.save();
+  }
+
+  //update the course schema students
+  await Course.findByIdAndUpdate(order.courseId, {
+    $addToSet: {
+      students: {
+        studentId: order.userId,
+        studentName: order.userName,
+        studentEmail: order.userEmail,
+        paidAmount: order.coursePricing,
+      },
+    },
+  });
+}
+
 const capturePaymentAndFinalizeOrder = async (req, res) => {
   try {
     const { paymentId, payerId, orderId } = req.body;
@@ -124,51 +171,7 @@ const capturePaymentAndFinalizeOrder = async (req, res) => {
 
     await order.save();
 
-    //update out student course model
-    const studentCourses = await StudentCourses.findOne({
-      userId: order.userId,
-    });
-
-    if (studentCourses) {
-      studentCourses.courses.push({
-        courseId: order.courseId,
-        title: order.courseTitle,
-        instructorId: order.instructorId,
-        instructorName: order.instructorName,
-        dateOfPurchase: order.orderDate,
-        courseImage: order.courseImage,
-      });
-
-      await studentCourses.save();
-    } else {
-      const newStudentCourses = new StudentCourses({
-        userId: order.userId,
-        courses: [
-          {
-            courseId: order.courseId,
-            title: order.courseTitle,
-            instructorId: order.instructorId,
-            instructorName: order.instructorName,
-            dateOfPurchase: order.orderDate,
-            courseImage: order.courseImage,
-          },
-        ],
-      });
-
-      await newStudentCourses.save();
-    }
-
-    //update the course schema students
-    await Course.findByIdAndUpdate(order.courseId, {
-      $addToSet: {
-        students: {
-          studentId: order.userId,
-          studentName: order.userName,
-          studentEmail: order.userEmail,
-          paidAmount: order.coursePricing,
-        },
-      },
-    });
+    await enrollStudentInCourse(order);
 
     res.status(200).json({
       success: true,
@@ -184,4 +187,73 @@ const capturePaymentAndFinalizeOrder = async (req, res) => {
   }
 };
 
-module.exports = { createOrder, capturePaymentAndFinalizeOrder };
+// Instant "purchase" for demo/local use, bypassing the real PayPal
+// checkout redirect (which needs a live PAYPAL_CLIENT_ID/SECRET).
+const createMockOrder = async (req, res) => {
+  try {
+    const {
+      userId,
+      userName,
+      userEmail,
+      instructorId,
+      instructorName,
+      courseImage,
+      courseTitle,
+      courseId,
+      coursePricing,
+    } = req.body;
+
+    const existingOrder = await Order.findOne({
+      userId,
+      courseId,
+      paymentStatus: "paid",
+    });
+
+    if (existingOrder) {
+      return res.status(400).json({
+        success: false,
+        message: "You already own this course",
+      });
+    }
+
+    const order = new Order({
+      userId,
+      userName,
+      userEmail,
+      orderStatus: "confirmed",
+      paymentMethod: "mock",
+      paymentStatus: "paid",
+      orderDate: new Date(),
+      paymentId: `MOCK-${Date.now()}`,
+      payerId: "MOCK-BUYER",
+      instructorId,
+      instructorName,
+      courseImage,
+      courseTitle,
+      courseId,
+      coursePricing,
+    });
+
+    await order.save();
+
+    await enrollStudentInCourse(order);
+
+    res.status(201).json({
+      success: true,
+      message: "Course purchased successfully!",
+      data: order,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      success: false,
+      message: "Some error occured!",
+    });
+  }
+};
+
+module.exports = {
+  createOrder,
+  capturePaymentAndFinalizeOrder,
+  createMockOrder,
+};

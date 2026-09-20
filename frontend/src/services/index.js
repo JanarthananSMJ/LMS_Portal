@@ -18,6 +18,24 @@ export async function checkAuthService() {
   return data;
 }
 
+export async function fetchProfileService() {
+  const { data } = await axiosInstance.get("/auth/profile");
+
+  return data;
+}
+
+export async function updateProfileService(formData) {
+  const { data } = await axiosInstance.put("/auth/profile", formData);
+
+  return data;
+}
+
+export async function changePasswordService(formData) {
+  const { data } = await axiosInstance.put("/auth/change-password", formData);
+
+  return data;
+}
+
 export async function mediaUploadService(formData, onProgressCallback) {
   const { data } = await axiosInstance.post("/media/upload", formData, {
     onUploadProgress: (progressEvent) => {
@@ -103,6 +121,15 @@ export async function checkCoursePurchaseInfoService(courseId, studentId) {
 
 export async function createPaymentService(formData) {
   const { data } = await axiosInstance.post(`/student/order/create`, formData);
+
+  return data;
+}
+
+export async function createMockPurchaseService(formData) {
+  const { data } = await axiosInstance.post(
+    `/student/order/mock-purchase`,
+    formData
+  );
 
   return data;
 }
