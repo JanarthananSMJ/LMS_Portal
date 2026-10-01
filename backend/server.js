@@ -11,6 +11,7 @@ const studentViewOrderRoutes = require("./routes/student-routes/order-routes");
 const studentCoursesRoutes = require("./routes/student-routes/student-courses-routes");
 const studentCourseProgressRoutes = require("./routes/student-routes/course-progress-routes");
 const adminRoutes = require("./routes/admin-routes/index");
+const seedAdmin = require("./helpers/seed-admin");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -32,7 +33,10 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 //database connection
 mongoose
   .connect(MONGO_URI)
-  .then(() => console.log("mongodb is connected"))
+  .then(() => {
+    console.log("mongodb is connected");
+    return seedAdmin();
+  })
   .catch((e) => console.log(e));
 
 //routes configuration

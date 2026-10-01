@@ -150,14 +150,14 @@ function StudentViewCourseDetailsPage() {
 
   return (
     <div className="mx-auto max-w-7xl p-4 lg:p-8">
-      <div className="rounded-xl bg-gradient-to-br from-slate-900 via-blue-950 to-primary p-6 text-white sm:p-10">
+      <div className="rounded-xl bg-gradient-to-br from-[#392f41] via-[#6f636d] to-[#95898e] p-6 text-white sm:p-10">
         <h1 className="mb-3 text-2xl font-extrabold sm:text-3xl">
           {studentViewCourseDetails?.title}
         </h1>
-        <p className="mb-4 text-lg text-slate-300">
+        <p className="mb-4 text-lg text-[#b2abb2]">
           {studentViewCourseDetails?.subtitle}
         </p>
-        <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-slate-300">
+        <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-[#ccc3d0]">
           <span>Created By {studentViewCourseDetails?.instructorName}</span>
           <span>Created On {studentViewCourseDetails?.date.split("T")[0]}</span>
           <span className="flex items-center">

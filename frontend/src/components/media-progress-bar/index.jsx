@@ -21,9 +21,9 @@ function MediaProgressbar({ isMediaUploading, progress }) {
   if (!showProgress) return null;
 
   return (
-    <div className="w-full bg-gray-200 rounded-full h-3 mt-5 mb-5 relative overflow-hidden">
+    <div className="w-full bg-[#ccc3d0] rounded-full h-3 mt-5 mb-5 relative overflow-hidden">
       <motion.div
-        className="bg-blue-600 h-3 rounded-full"
+        className="bg-[#6f636d] h-3 rounded-full"
         initial={{ width: 0 }}
         animate={{
           width: `${animatedProgress}%`,
@@ -32,7 +32,7 @@ function MediaProgressbar({ isMediaUploading, progress }) {
       >
         {progress >= 100 && isMediaUploading && (
           <motion.div
-            className="absolute top-0 left-0 right-0 bottom-0 bg-blue-400 opacity-50"
+            className="absolute top-0 left-0 right-0 bottom-0 bg-[#b2abb2] opacity-50"
             animate={{
               x: ["0%", "100%", "0%"],
             }}

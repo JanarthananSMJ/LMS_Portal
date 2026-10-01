@@ -40,37 +40,37 @@ function AdminOverview() {
       icon: Users,
       label: "Total Users",
       value: stats?.totalUsers ?? 0,
-      iconClass: "bg-blue-50 text-primary",
+      iconClass: "bg-[#ccc3d0]/30 text-primary",
     },
     {
       icon: GraduationCap,
       label: "Students",
       value: stats?.totalStudents ?? 0,
-      iconClass: "bg-blue-50 text-primary",
+      iconClass: "bg-[#ccc3d0]/30 text-primary",
     },
     {
       icon: UserSquare2,
       label: "Instructors",
       value: stats?.totalInstructors ?? 0,
-      iconClass: "bg-violet-50 text-violet-600",
+      iconClass: "bg-[#b2abb2]/30 text-[#6f636d]",
     },
     {
       icon: BookOpen,
       label: "Total Courses",
       value: stats?.totalCourses ?? 0,
-      iconClass: "bg-amber-50 text-amber-600",
+      iconClass: "bg-[#ebe7df] text-[#392f41]",
     },
     {
       icon: ShoppingCart,
       label: "Total Enrollments",
       value: stats?.totalEnrollments ?? 0,
-      iconClass: "bg-sky-50 text-sky-600",
+      iconClass: "bg-[#95898e]/20 text-[#6f636d]",
     },
     {
       icon: DollarSign,
       label: "Total Revenue",
       value: `$${stats?.totalRevenue ?? 0}`,
-      iconClass: "bg-emerald-50 text-emerald-600",
+      iconClass: "bg-[#392f41]/10 text-[#392f41]",
     },
   ];
 

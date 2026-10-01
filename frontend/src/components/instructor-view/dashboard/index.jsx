@@ -46,13 +46,13 @@ function InstructorDashboard({ listOfCourses }) {
       icon: Users,
       label: "Total Students",
       value: calculateTotalStudentsAndProfit().totalStudents,
-      iconClass: "bg-blue-50 text-primary",
+      iconClass: "bg-[#ccc3d0]/30 text-primary",
     },
     {
       icon: DollarSign,
       label: "Total Revenue",
       value: `$${calculateTotalStudentsAndProfit().totalProfit}`,
-      iconClass: "bg-emerald-50 text-emerald-600",
+      iconClass: "bg-[#392f41]/10 text-[#392f41]",
     },
   ];
 

@@ -36,12 +36,6 @@ function InstructorDashboardpage() {
       value: "courses",
       component: <InstructorCourses listOfCourses={instructorCoursesList} />,
     },
-    {
-      icon: LogOut,
-      label: "Logout",
-      value: "logout",
-      component: null,
-    },
   ];
 
   function handleLogout() {
@@ -51,8 +45,8 @@ function InstructorDashboardpage() {
 
   return (
     <div className="flex h-full min-h-screen bg-secondary/50">
-      <aside className="hidden w-64 border-r bg-card md:block">
-        <div className="p-4">
+      <aside className="hidden w-64 flex-col border-r bg-card md:flex">
+        <div className="flex flex-1 flex-col p-4">
           <div className="mb-6 flex items-center gap-2 px-2">
             <GraduationCap className="h-6 w-6 text-primary" />
             <h2 className="text-lg font-extrabold tracking-tight text-foreground">
@@ -65,17 +59,23 @@ function InstructorDashboardpage() {
                 className="w-full justify-start"
                 key={menuItem.value}
                 variant={activeTab === menuItem.value ? "secondary" : "ghost"}
-                onClick={
-                  menuItem.value === "logout"
-                    ? handleLogout
-                    : () => setActiveTab(menuItem.value)
-                }
+                onClick={() => setActiveTab(menuItem.value)}
               >
                 <menuItem.icon className="mr-2 h-4 w-4" />
                 {menuItem.label}
               </Button>
             ))}
           </nav>
+          <div className="mt-auto border-t pt-4">
+            <Button
+              className="w-full justify-start"
+              variant="ghost"
+              onClick={handleLogout}
+            >
+              <LogOut className="mr-2 h-4 w-4" />
+              Logout
+            </Button>
+          </div>
         </div>
       </aside>
       <main className="flex-1 overflow-y-auto p-4 lg:p-8">

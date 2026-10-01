@@ -93,23 +93,23 @@ function AuthPage() {
 
   return (
     <div className="flex min-h-screen flex-col lg:flex-row">
-      <div className="hidden flex-col justify-between bg-gradient-to-br from-slate-900 via-blue-950 to-primary p-10 text-white lg:flex lg:w-1/2">
+      <div className="hidden flex-col justify-between bg-gradient-to-br from-[#392f41] via-[#6f636d] to-[#95898e] p-10 text-white lg:flex lg:w-1/2">
         <Link to="/" className="flex items-center gap-2">
           <GraduationCap className="h-8 w-8" />
           <span className="text-xl font-extrabold tracking-tight">
-            LMS<span className="text-blue-300">Learn</span>
+            LMS<span className="text-[#ccc3d0]">Learn</span>
           </span>
         </Link>
         <div className="max-w-md">
           <h1 className="mb-4 text-4xl font-extrabold leading-tight">
             Learn without limits
           </h1>
-          <p className="text-lg text-slate-300">
+          <p className="text-lg text-[#b2abb2]">
             Start, switch, or advance your career with courses from real
             instructors — learn at your own pace, on any device.
           </p>
         </div>
-        <p className="text-sm text-slate-400">
+        <p className="text-sm text-[#95898e]">
           © {new Date().getFullYear()} LMS Learn. All rights reserved.
         </p>
       </div>

@@ -53,23 +53,23 @@ function StudentHomePage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <section className="bg-gradient-to-br from-slate-900 via-blue-950 to-primary text-white">
+      <section className="bg-gradient-to-br from-[#392f41] via-[#6f636d] to-[#95898e] text-white">
         <div className="mx-auto flex max-w-7xl flex-col items-center gap-10 px-4 py-16 lg:flex-row lg:px-8 lg:py-24">
           <div className="lg:w-1/2">
-            <p className="mb-3 text-sm font-semibold uppercase tracking-wider text-blue-300">
+            <p className="mb-3 text-sm font-semibold uppercase tracking-wider text-[#ccc3d0]">
               Learn without limits
             </p>
             <h1 className="mb-5 text-4xl font-extrabold leading-tight md:text-5xl">
               Skills that move your career forward
             </h1>
-            <p className="mb-8 max-w-md text-lg text-slate-300">
+            <p className="mb-8 max-w-md text-lg text-[#b2abb2]">
               Learn from real-world instructors with courses designed to help
               you master new skills, at your own pace.
             </p>
             <Button
               size="lg"
               onClick={() => navigate("/courses")}
-              className="bg-white text-slate-900 hover:bg-slate-100"
+              className="bg-[#ebe7df] text-[#392f41] hover:bg-[#ccc3d0]"
             >
               Explore Courses
             </Button>
